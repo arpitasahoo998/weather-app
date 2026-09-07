@@ -22,10 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let debounceTimer;
 
     // Open-Meteo WMO Weather interpretation codes
-    function getWeatherCodeDetails(code) {
+    function getWeatherCodeDetails(code, isDay = 1) {
         const codes = {
-            0: { desc: 'Clear sky', icon: 'bx-sun', theme: 'weather-clear-day' },
-            1: { desc: 'Mainly clear', icon: 'bx-cloud', theme: 'weather-clear-day' },
+            0: { desc: 'Clear sky', icon: isDay ? 'bx-sun' : 'bx-moon', theme: 'weather-clear-day' },
+            1: { desc: 'Mainly clear', icon: isDay ? 'bx-sun' : 'bx-moon', theme: 'weather-clear-day' },
             2: { desc: 'Partly cloudy', icon: 'bx-cloud', theme: 'weather-cloudy-day' },
             3: { desc: 'Overcast', icon: 'bx-cloud', theme: 'weather-cloudy-day' },
             45: { desc: 'Fog', icon: 'bx-water', theme: 'weather-cloudy-day' },
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cityNameEl.textContent = cityName;
             weatherDescEl.textContent = 'Fetching forecast...';
 
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,is_day,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max&timezone=auto`;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,is_day,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max&timezone=auto`;
             
             const res = await fetch(url);
             const data = await res.json();
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Current weather
         const current = data.current;
         const daily = data.daily;
-        const details = getWeatherCodeDetails(current.weather_code);
+        const details = getWeatherCodeDetails(current.weather_code, current.is_day);
 
         // Update Theme
         document.body.className = '';
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const hData = data.hourly;
             if (!hData.time[i]) break; // prevent out of bounds
 
-            const hourCode = getWeatherCodeDetails(hData.weather_code[i]);
+            const hourCode = getWeatherCodeDetails(hData.weather_code[i], hData.is_day[i]);
             
             // Format time manually to avoid browser timezone shift
             const timeStr = hData.time[i]; // e.g. "2024-05-18T14:00"
