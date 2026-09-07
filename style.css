@@ -25,12 +25,12 @@ body {
 }
 
 /* Weather Themes */
-body.weather-clear-day { background: linear-gradient(180deg, #3A78C5 0%, #76B4EA 100%); }
-body.weather-clear-night { background: linear-gradient(180deg, #0A1128 0%, #1A2A56 100%); }
-body.weather-cloudy-day { background: linear-gradient(180deg, #5c7b99 0%, #90a8bd 100%); }
-body.weather-cloudy-night { background: linear-gradient(180deg, #1C2838 0%, #304156 100%); }
-body.weather-rain { background: linear-gradient(180deg, #2D3A4B 0%, #51657A 100%); }
-body.weather-snow { background: linear-gradient(180deg, #7b94ad 0%, #BCCEDB 100%); }
+body.weather-clear-day { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1601297183305-6df142704ea2?q=80&w=1920&auto=format&fit=crop'); }
+body.weather-clear-night { background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=1920&auto=format&fit=crop'); }
+body.weather-cloudy-day { background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1534088568595-a066f410cbda?q=80&w=1920&auto=format&fit=crop'); }
+body.weather-cloudy-night { background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?q=80&w=1920&auto=format&fit=crop'); }
+body.weather-rain { background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?q=80&w=1920&auto=format&fit=crop'); }
+body.weather-snow { background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1517260739337-6799d239ce83?q=80&w=1920&auto=format&fit=crop'); }
 
 .app-container {
     max-width: 600px;
