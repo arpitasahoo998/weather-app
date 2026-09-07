@@ -1,13 +1,77 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SkyPulse</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SkyPulse Weather</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body class="weather-clear-day">
+    <div class="app-container">
+        <!-- Top Search Bar -->
+        <header class="search-header">
+            <div class="search-box">
+                <i class='bx bx-search'></i>
+                <input type="text" id="citySearch" placeholder="Search for a city or airport" autocomplete="off">
+            </div>
+            <ul id="searchResults" class="search-results hidden"></ul>
+        </header>
+
+        <!-- Current Weather Overview -->
+        <section class="current-weather">
+            <h1 id="cityName">My Location</h1>
+            <p id="localTime" style="font-size: 1rem; font-weight: 500; margin-bottom: 0.25rem; color: var(--text-secondary); text-shadow: 0 1px 3px rgba(0,0,0,0.2);">--:--</p>
+            <h2 id="currentTemp">--&deg;</h2>
+            <h3 id="weatherDesc">Loading...</h3>
+            <div class="high-low">
+                <span id="highTemp">H:--&deg;</span>
+                <span id="lowTemp">L:--&deg;</span>
+            </div>
+        </section>
+
+        <!-- Main Content Area -->
+        <main class="forecast-container">
+            <!-- Hourly Forecast Panel -->
+            <section class="panel hourly-forecast">
+                <p class="panel-header"><i class='bx bx-time-five'></i> HOURLY FORECAST</p>
+                <div class="hourly-scroll" id="hourlyContainer">
+                    <!-- Javascript will inject hourly items here -->
+                </div>
+            </section>
+
+            <!-- 10-Day Forecast Panel -->
+            <section class="panel daily-forecast">
+                <p class="panel-header"><i class='bx bx-calendar'></i> 10-DAY FORECAST</p>
+                <div id="dailyContainer">
+                    <!-- Javascript will inject daily items here -->
+                </div>
+            </section>
+
+            <!-- Grid of specific metrics -->
+            <section class="metrics-grid">
+                <div class="panel metric-card">
+                    <p class="panel-header"><i class='bx bx-sun'></i> UV INDEX</p>
+                    <h3 id="uvIndex">--</h3>
+                    <p class="metric-desc" id="uvDesc">Moderate</p>
+                </div>
+                <div class="panel metric-card">
+                    <p class="panel-header"><i class='bx bx-wind'></i> WIND</p>
+                    <h3 id="windSpeed">-- km/h</h3>
+                </div>
+                <div class="panel metric-card">
+                    <p class="panel-header"><i class='bx bx-droplet'></i> HUMIDITY</p>
+                    <h3 id="humidity">--%</h3>
+                </div>
+                <div class="panel metric-card">
+                    <p class="panel-header"><i class='bx bx-show'></i> VISIBILITY</p>
+                    <h3 id="visibility">-- km</h3>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
 </html>
