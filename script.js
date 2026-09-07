@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cityNameEl.textContent = cityName;
             weatherDescEl.textContent = 'Fetching forecast...';
 
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,is_day,weather_code,wind_speed_10m,visibility&hourly=temperature_2m,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,sunrise,sunset&timezone=auto`;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,is_day,weather_code,wind_speed_10m,visibility&hourly=temperature_2m,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,sunrise,sunset,precipitation_probability_max&timezone=auto`;
             
             const res = await fetch(url);
             const data = await res.json();
@@ -225,11 +225,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const range = maxOfWeek - minOfWeek;
             const leftPct = ((min - minOfWeek) / range) * 100;
             const widthPct = ((max - min) / range) * 100;
+            const pop = daily.precipitation_probability_max[i];
 
             dailyContainer.innerHTML += `
                 <div class="daily-item">
                     <span class="daily-day">${dayName}</span>
-                    <i class='bx ${dCode.icon} daily-icon'></i>
+                    <div style="flex: 0.5; display: flex; align-items: center; justify-content: flex-start; gap: 0.35rem;">
+                        <i class='bx ${dCode.icon}' style="font-size: 1.3rem;"></i>
+                        <span style="color: #7dd3fc; font-size: 0.8rem; font-weight: 600; width: 25px;">${pop > 0 ? pop + '%' : ''}</span>
+                    </div>
                     <div class="daily-temps">
                         <span class="daily-low">${min}&deg;</span>
                         <div class="daily-bar">
