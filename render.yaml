@@ -2,6 +2,6 @@ services:
   - type: web
     name: skypulse
     env: static
-    buildCommand: ""
+    buildCommand: "echo Build completed"
     staticPublishPath: .
     autoDeploy: true
