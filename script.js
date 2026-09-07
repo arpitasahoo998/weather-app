@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cityNameEl.textContent = cityName;
             weatherDescEl.textContent = 'Fetching forecast...';
 
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,is_day,weather_code,wind_speed_10m,visibility&hourly=temperature_2m,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max&timezone=auto`;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,is_day,weather_code,wind_speed_10m,visibility&hourly=temperature_2m,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,sunrise,sunset&timezone=auto`;
             
             const res = await fetch(url);
             const data = await res.json();
@@ -149,6 +149,17 @@ document.addEventListener('DOMContentLoaded', () => {
         let startIndex = data.hourly.time.indexOf(currentHourPrefix);
         if (startIndex === -1) startIndex = 0; // fallback
 
+        // Collect Sunrise and Sunset events
+        let sunEvents = [];
+        if (daily.sunrise && daily.sunset) {
+            daily.sunrise.forEach(s => {
+                if (s) sunEvents.push({ timeStr: s, type: 'Sunrise', icon: 'bx-sun' });
+            });
+            daily.sunset.forEach(s => {
+                if (s) sunEvents.push({ timeStr: s, type: 'Sunset', icon: 'bx-moon' });
+            });
+        }
+
         // Just take the next 24 hours
         for (let i = startIndex; i < startIndex + 24; i++) {
             const hData = data.hourly;
@@ -158,6 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Format time manually to avoid browser timezone shift
             const timeStr = hData.time[i]; // e.g. "2024-05-18T14:00"
+            const nextTimeStr = hData.time[i+1];
             let hourNum = parseInt(timeStr.split('T')[1].split(':')[0]);
             
             let displayTime;
@@ -176,6 +188,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="hourly-temp">${Math.round(hData.temperature_2m[i])}&deg;</span>
                 </div>
             `;
+            
+            // Check if there are any sun events inside this hour block
+            const eventsInThisHour = sunEvents.filter(e => e.timeStr >= timeStr && (nextTimeStr ? e.timeStr < nextTimeStr : true));
+            eventsInThisHour.forEach(event => {
+                let eHourNum = parseInt(event.timeStr.split('T')[1].split(':')[0]);
+                let eMinuteStr = event.timeStr.split('T')[1].split(':')[1];
+                const ampm = eHourNum >= 12 ? 'PM' : 'AM';
+                eHourNum = eHourNum % 12 || 12;
+                let eventDisplayTime = `${eHourNum}:${eMinuteStr} ${ampm}`;
+                
+                hourlyContainer.innerHTML += `
+                    <div class="hourly-item">
+                        <span class="hourly-time">${eventDisplayTime}</span>
+                        <i class='bx ${event.icon} hourly-icon'></i>
+                        <span class="hourly-temp" style="font-size: 0.85rem;">${event.type}</span>
+                    </div>
+                `;
+            });
         }
 
         // Daily
