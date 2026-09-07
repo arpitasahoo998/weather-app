@@ -2,6 +2,6 @@ services:
   - type: web
     name: skypulse
     env: static
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
+    buildCommand: ""
+    staticPublishPath: .
     autoDeploy: true
