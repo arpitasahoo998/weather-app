@@ -143,14 +143,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Hourly
         hourlyContainer.innerHTML = '';
-        const currentHour = new Date().getHours();
+        
+        // Find the current hour in the target location's timezone
+        const currentHourPrefix = current.time.substring(0, 13) + ":00";
+        let startIndex = data.hourly.time.indexOf(currentHourPrefix);
+        if (startIndex === -1) startIndex = 0; // fallback
+
         // Just take the next 24 hours
-        for (let i = currentHour; i < currentHour + 24; i++) {
+        for (let i = startIndex; i < startIndex + 24; i++) {
             const hData = data.hourly;
+            if (!hData.time[i]) break; // prevent out of bounds
+
             const hourCode = getWeatherCodeDetails(hData.weather_code[i]);
-            const time = new Date(hData.time[i]);
-            let displayTime = time.getHours() === currentHour ? 'Now' : 
-                              time.toLocaleTimeString([], { hour: 'numeric' });
+            
+            // Format time manually to avoid browser timezone shift
+            const timeStr = hData.time[i]; // e.g. "2024-05-18T14:00"
+            let hourNum = parseInt(timeStr.split('T')[1].split(':')[0]);
+            
+            let displayTime;
+            if (i === startIndex) {
+                displayTime = 'Now';
+            } else {
+                const ampm = hourNum >= 12 ? 'PM' : 'AM';
+                hourNum = hourNum % 12 || 12;
+                displayTime = `${hourNum} ${ampm}`;
+            }
 
             hourlyContainer.innerHTML += `
                 <div class="hourly-item">
@@ -164,8 +181,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Daily
         dailyContainer.innerHTML = '';
         for (let i = 0; i < 7; i++) {
-            const date = new Date(daily.time[i]);
-            const dayName = i === 0 ? 'Today' : date.toLocaleDateString([], { weekday: 'short' });
+            if (!daily.time[i]) break;
+            // Parse as UTC to prevent browser timezone from shifting the day
+            const date = new Date(daily.time[i] + 'T12:00:00Z');
+            const dayName = i === 0 ? 'Today' : date.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' });
             const dCode = getWeatherCodeDetails(daily.weather_code[i]);
             const min = Math.round(daily.temperature_2m_min[i]);
             const max = Math.round(daily.temperature_2m_max[i]);
