@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cityNameEl.textContent = cityName;
             weatherDescEl.textContent = 'Fetching forecast...';
 
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,is_day,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max&timezone=auto`;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,is_day,weather_code,wind_speed_10m,visibility&hourly=temperature_2m,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max&timezone=auto`;
             
             const res = await fetch(url);
             const data = await res.json();
@@ -212,12 +212,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Metrics
-        const uv = daily.uv_index_max[0];
-        uvIndexEl.textContent = uv ? Math.round(uv) : '--';
+        const uv = daily.uv_index_max && daily.uv_index_max[0];
+        uvIndexEl.textContent = (uv !== undefined && uv !== null) ? Math.round(uv) : '--';
         uvDescEl.textContent = uv > 5 ? 'High' : (uv > 2 ? 'Moderate' : 'Low');
         
         windSpeedEl.textContent = `${current.wind_speed_10m} km/h`;
         humidityEl.textContent = `${current.relative_humidity_2m}%`;
-        visibilityEl.textContent = '10 km'; // Mocked as open-meteo basic doesn't always have current vis
+        
+        const visKm = current.visibility !== undefined ? Math.round(current.visibility / 1000) : '--';
+        visibilityEl.textContent = `${visKm} km`;
     }
 });
